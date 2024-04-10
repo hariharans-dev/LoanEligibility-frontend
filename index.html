@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Loan Eligibility Form</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 0;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 50px auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      h2 {
+        text-align: center;
+        color: #333;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+      }
+
+      label {
+        margin-bottom: 8px;
+        color: #333;
+      }
+
+      input,
+      select {
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      #predictionResult {
+        margin-top: 20px;
+        padding: 10px;
+        /* border: 1px solid #ccc; */
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Loan Eligibility Form</h2>
+      <form id="loanForm">
+        <label for="gender">Gender:</label>
+        <select id="gender" name="Gender">
+          <option value="Male">Male</option>
+          <option value="Female">Female</option></select
+        ><br />
+
+        <label for="married">Married:</label>
+        <select id="married" name="Married">
+          <option value="Yes">Yes</option>
+          <option value="No">No</option></select
+        ><br />
+
+        <label for="dependents">Dependents:</label>
+        <select id="dependents" name="Dependents">
+          <option value="0">0</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3+">3+</option></select
+        ><br />
+
+        <label for="education">Education:</label>
+        <select id="education" name="Education">
+          <option value="Graduate">Graduate</option>
+          <option value="Not Graduate">Not Graduate</option></select
+        ><br />
+
+        <label for="selfEmployed">Self Employed:</label>
+        <select id="selfEmployed" name="Self_Employed">
+          <option value="No">No</option>
+          <option value="Yes">Yes</option></select
+        ><br />
+
+        <label for="applicantIncome">Applicant Income:</label>
+        <input type="text" id="applicantIncome" name="ApplicantIncome" /><br />
+
+        <label for="coapplicantIncome">Coapplicant Income:</label>
+        <input
+          type="text"
+          id="coapplicantIncome"
+          name="CoapplicantIncome"
+        /><br />
+
+        <label for="loanAmount">Loan Amount:</label>
+        <input type="text" id="loanAmount" name="LoanAmount" /><br />
+
+        <label for="loanAmountTerm">Loan Amount Term:</label>
+        <input type="text" id="loanAmountTerm" name="Loan_Amount_Term" /><br />
+
+        <label for="creditHistory">Credit History:</label>
+        <select id="creditHistory" name="Credit_History">
+          <option value="1">Yes</option>
+          <option value="0">No</option></select
+        ><br />
+
+        <label for="propertyArea">Property Area:</label>
+        <select id="propertyArea" name="Property_Area">
+          <option value="Rural">Rural</option>
+          <option value="Semiurban">Semiurban</option>
+          <option value="Urban">Urban</option></select
+        ><br />
+
+        <button type="button" onclick="submitForm()">
+          Predict Loan Status
+        </button>
+      </form>
+      <div id="predictionResult"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+      function submitForm() {
+        var formData = {
+          Loan_ID: ["LP001015"],
+          Gender: document.getElementById("gender").value,
+          Married: document.getElementById("married").value,
+          Dependents: document.getElementById("dependents").value,
+          Education: document.getElementById("education").value,
+          Self_Employed: document.getElementById("selfEmployed").value,
+          ApplicantIncome: parseInt(
+            document.getElementById("applicantIncome").value
+          ),
+          CoapplicantIncome: parseInt(
+            document.getElementById("coapplicantIncome").value
+          ),
+          LoanAmount: parseInt(document.getElementById("loanAmount").value),
+          Loan_Amount_Term: parseInt(
+            document.getElementById("loanAmountTerm").value
+          ),
+          Credit_History: parseInt(
+            document.getElementById("creditHistory").value
+          ),
+          Property_Area: document.getElementById("propertyArea").value,
+        };
+
+        // Send the request to the API endpoint using Axios
+        axios
+          .post("http://3.6.94.10:5000/predict", formData)
+          .then(function (response) {
+            console.log(response);
+            var predictionResult = document.getElementById("predictionResult");
+            predictionResult.textContent =
+              "Loan Status: " + response.data.Loan_Status;
+            // const res = response.data.Loan_Status;
+            // if (res == "0") {
+            //   predictionResult.textContent = "Loan Status: Approved";
+            // } else {
+            //   predictionResult.textContent = "Loan Status: Declined";
+            // }
+          })
+          .catch(function (error) {
+            console.error("Error:", error);
+          });
+      }
+    </script>
+  </body>
+</html>
